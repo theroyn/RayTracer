@@ -1,13 +1,14 @@
-#include <iostream>
-
 #include "imgproc/image_io.h"
 #include "imgproc/pixel_manip.h"
+#include "math/common.hpp"
 #include "math/ray.h"
 #include "math/vec3.hpp"
+#include "objects/camera.h"
 #include "objects/hittable_list.h"
 #include "objects/sphere.h"
 
 #include <cstring>
+#include <iostream>
 #include <memory>
 
 color ray_color(const ray& r, const hittable_list& world)
@@ -28,10 +29,11 @@ int main()
 {
     sphere s(point3(0., 0., 0.), 1.);
     // Image
-    double aspect_ratio = 16.0 / 9.0;
-    size_t image_width = 400;
-    size_t image_height = image_width / aspect_ratio;
-    size_t channels = 3;
+    static constexpr double aspect_ratio = 16.0 / 9.0;
+    static constexpr size_t image_width = 400;
+    static constexpr size_t image_height = image_width / aspect_ratio;
+    static constexpr size_t channels = 3;
+    static constexpr int samples_per_pixel = 100;
     static constexpr char NEW_FILENAME[] = "out.png";
 
     std::unique_ptr<byte[]> data = alloc_image_buffer(image_width, image_height, channels);
@@ -42,14 +44,7 @@ int main()
     world.add(std::make_shared<sphere>(point3(0, -100.5, -1), 100));
 
     // Camera
-    double viewport_height = 2;
-    double viewport_width = viewport_height * aspect_ratio;
-    double focal_length = 1;
-
-    point3 origin = point3(0., 0., 0.);
-    vec3 horizontal = vec3(viewport_width, 0., 0.);
-    vec3 vertical = vec3(0., viewport_height, 0.);
-    auto lower_left_corner = origin - horizontal / 2. - vertical / 2. - vec3(0., 0., focal_length);
+    camera cam(aspect_ratio);
 
     // Render
     std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
@@ -59,12 +54,15 @@ int main()
         std::cerr << "\rRendering line " << image_height - 1 - j << "   " << std::flush;
         for (ssize_t i = 0; i < image_width; ++i)
         {
-            double u = (double)i / (double)(image_width - 1);
-            double v = (double)j / (double)(image_height - 1);
-
-            ray current_ray(origin, lower_left_corner + u * horizontal + v * vertical);
-
-            color current_pixel_color = ray_color(current_ray, world);
+            color current_pixel_color;
+            for (size_t s = 0; s < samples_per_pixel; ++s)
+            {
+                double u = ((double)i + random_double()) / (double)(image_width - 1);
+                double v = ((double)j + random_double()) / (double)(image_height - 1);
+                ray current_ray = cam.get_ray(u, v);
+                current_pixel_color += ray_color(current_ray, world);
+            }
+            current_pixel_color /= samples_per_pixel;
 
             pixel_write(data, i, image_height - 1 - j, image_width, current_pixel_color);
         }
