@@ -4,35 +4,20 @@
 #include "imgproc/pixel_manip.h"
 #include "math/ray.h"
 #include "math/vec3.hpp"
+#include "objects/sphere.h"
 
 #include <cstring>
 #include <memory>
 
-double is_ray_touching_sphere(const ray& ray, const point3& sphere_center, double sphere_radaius)
-{
-    vec3 oc = ray.origin() - sphere_center;
-    double a = dot(ray.direction(), ray.direction());
-    double half_b = dot(ray.direction(), oc);
-    double c = dot(oc, oc) - sphere_radaius * sphere_radaius;
-    double quarter_discriminant = (half_b * half_b) - (a * c);
-
-    if (quarter_discriminant < 0)
-    {
-        return -1.0;
-    }
-    double t = (-half_b - sqrt(quarter_discriminant)) / a;
-
-    return t;
-}
-
 color ray_color(const ray& r)
 {
     point3 sphere_center(0.5, 0.3, -2.);
-    if (double t = is_ray_touching_sphere(r, sphere_center, 0.5); t >= 0.)
+    sphere s(sphere_center, 0.2);
+    hit_record rec;
+
+    if (s.hit(r, 0, 1000, rec))
     {
-        point3 hit_point = r.at(t);
-        vec3 N = unit_vector(hit_point - sphere_center);
-        std::cout << "N=" << N << "\n";
+        vec3 N = rec.normal;
         return 0.5 * (N + 1.0);
     }
     vec3 unit_direction = unit_vector(r.direction());
@@ -42,6 +27,7 @@ color ray_color(const ray& r)
 
 int main()
 {
+    sphere s(point3(0., 0., 0.), 1.);
     // Image
     double aspect_ratio = 16.0 / 9.0;
     size_t image_width = 400;
@@ -79,6 +65,8 @@ int main()
             pixel_write(data, i, image_height - 1 - j, image_width, current_pixel_color);
         }
     }
+
+    std::cerr << "\ndone\n";
 
     // Write
     bool res = image_write(NEW_FILENAME, image_width, image_height, channels, data.get());
