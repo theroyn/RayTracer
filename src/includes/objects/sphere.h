@@ -6,7 +6,7 @@ class sphere : public hittable
 {
 public:
     sphere(point3 center, double rad) : _center(center), _rad(rad) {}
-    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) override;
+    virtual bool hit(const ray& r, double t_min, double t_max, hit_record& rec) const override;
     point3 get_center() const
     {
         return _center;
@@ -17,7 +17,7 @@ public:
     }
 
 private:
-    void set_hit_record(const ray& r, double t, hit_record& rec);
+    void set_hit_record(const ray& r, double t, hit_record& rec) const;
 
 private:
     point3 _center;

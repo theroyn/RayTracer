@@ -13,6 +13,7 @@ set(SOURCES_DIRECTORY  "${CMAKE_SOURCE_DIR}/src")
 file(GLOB_RECURSE SRC_FILES
     "${SOURCES_DIRECTORY}/*.cpp"
     "${SOURCES_DIRECTORY}/*.h"
+    "${SOURCES_DIRECTORY}/*.hpp"
 )
 
 add_executable(${PROJECT_NAME} "${SRC_FILES}")

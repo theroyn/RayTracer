@@ -1,6 +1,6 @@
 #include "objects/sphere.h"
 
-void sphere::set_hit_record(const ray& r, double t, hit_record& rec)
+void sphere::set_hit_record(const ray& r, double t, hit_record& rec) const
 {
     rec.t = t;
     rec.p = r.at(t);
@@ -9,7 +9,7 @@ void sphere::set_hit_record(const ray& r, double t, hit_record& rec)
     rec.set_face_normal(r, outward_normal);
 }
 
-bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec)
+bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const
 {
     bool is_hit = false;
     vec3 oc = r.origin() - _center;

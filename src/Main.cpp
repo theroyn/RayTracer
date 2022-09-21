@@ -4,18 +4,17 @@
 #include "imgproc/pixel_manip.h"
 #include "math/ray.h"
 #include "math/vec3.hpp"
+#include "objects/hittable_list.h"
 #include "objects/sphere.h"
 
 #include <cstring>
 #include <memory>
 
-color ray_color(const ray& r)
+color ray_color(const ray& r, const hittable_list& world)
 {
-    point3 sphere_center(0.5, 0.3, -2.);
-    sphere s(sphere_center, 0.2);
     hit_record rec;
 
-    if (s.hit(r, 0, 1000, rec))
+    if (world.hit(r, 0, 1000, rec))
     {
         vec3 N = rec.normal;
         return 0.5 * (N + 1.0);
@@ -36,6 +35,11 @@ int main()
     static constexpr char NEW_FILENAME[] = "out.png";
 
     std::unique_ptr<byte[]> data = alloc_image_buffer(image_width, image_height, channels);
+
+    // World
+    hittable_list world;
+    world.add(std::make_shared<sphere>(point3(0, 0, -1), 0.5));
+    world.add(std::make_shared<sphere>(point3(0, -100.5, -1), 100));
 
     // Camera
     double viewport_height = 2;
@@ -60,7 +64,7 @@ int main()
 
             ray current_ray(origin, lower_left_corner + u * horizontal + v * vertical);
 
-            color current_pixel_color = ray_color(current_ray);
+            color current_pixel_color = ray_color(current_ray, world);
 
             pixel_write(data, i, image_height - 1 - j, image_width, current_pixel_color);
         }
