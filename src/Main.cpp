@@ -8,8 +8,33 @@
 #include <cstring>
 #include <memory>
 
+double is_ray_touching_sphere(const ray& ray, const point3& sphere_center, double sphere_radaius)
+{
+    vec3 oc = ray.origin() - sphere_center;
+    double a = dot(ray.direction(), ray.direction());
+    double half_b = dot(ray.direction(), oc);
+    double c = dot(oc, oc) - sphere_radaius * sphere_radaius;
+    double quarter_discriminant = (half_b * half_b) - (a * c);
+
+    if (quarter_discriminant < 0)
+    {
+        return -1.0;
+    }
+    double t = (-half_b - sqrt(quarter_discriminant)) / a;
+
+    return t;
+}
+
 color ray_color(const ray& r)
 {
+    point3 sphere_center(0.5, 0.3, -2.);
+    if (double t = is_ray_touching_sphere(r, sphere_center, 0.5); t >= 0.)
+    {
+        point3 hit_point = r.at(t);
+        vec3 N = unit_vector(hit_point - sphere_center);
+        std::cout << "N=" << N << "\n";
+        return 0.5 * (N + 1.0);
+    }
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
@@ -58,5 +83,5 @@ int main()
     // Write
     bool res = image_write(NEW_FILENAME, image_width, image_height, channels, data.get());
 
-    return res;
+    return res ? 0 : 1;
 }
