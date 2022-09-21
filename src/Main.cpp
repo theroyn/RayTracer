@@ -1,46 +1,62 @@
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include <stb_image_write.h>
-#define IDX2(col, row, width) ((col)*3) + ((row) * (width)*3)
 
+#include "imgproc/image_io.h"
+#include "imgproc/pixel_manip.h"
+#include "math/ray.h"
 #include "math/vec3.hpp"
 
-bool write_image(const std::string& path, size_t width, size_t height, size_t channels, u_char* data)
-{
-    size_t stride = width * channels * sizeof(data[0]);
-    bool res = (stbi_write_png(path.c_str(), width, height, channels, data, stride) == 1) ? true : false;
+#include <cstring>
+#include <memory>
 
-    return res;
+color ray_color(const ray& r)
+{
+    vec3 unit_direction = unit_vector(r.direction());
+    auto t = 0.5 * (unit_direction.y() + 1.0);
+    return (1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
-extern "C" int stbi_write_png_compression_level;
 
 int main()
 {
-    vec3 vv;
-    stbi_write_png_compression_level = 0;
-    std::cout << "Hello\n";
-    int width, height, channels;
-    static constexpr char FILENAME[] = "file_example_PNG_3MB.png";
+    // Image
+    double aspect_ratio = 16.0 / 9.0;
+    size_t image_width = 400;
+    size_t image_height = image_width / aspect_ratio;
+    size_t channels = 3;
     static constexpr char NEW_FILENAME[] = "out.png";
-    unsigned char* data = stbi_load(FILENAME, &width, &height, &channels, 0);
-    int stride = width * channels * sizeof(data[0]);
 
-    int col = width / 2;
-    int row = height / 4;
-    for (int col = width / 2; col < width; ++col)
+    std::unique_ptr<byte[]> data = alloc_image_buffer(image_width, image_height, channels);
+
+    // Camera
+    double viewport_height = 2;
+    double viewport_width = viewport_height * aspect_ratio;
+    double focal_length = 1;
+
+    point3 origin = point3(0., 0., 0.);
+    vec3 horizontal = vec3(viewport_width, 0., 0.);
+    vec3 vertical = vec3(0., viewport_height, 0.);
+    auto lower_left_corner = origin - horizontal / 2. - vertical / 2. - vec3(0., 0., focal_length);
+
+    // Render
+    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+
+    for (ssize_t j = image_height - 1; j >= 0; j--)
     {
-        for (int row = height / 4; row < height / 2; ++row)
+        std::cerr << "\rRendering line " << image_height - 1 - j << "   " << std::flush;
+        for (ssize_t i = 0; i < image_width; ++i)
         {
-            data[IDX2(col, row, width) + 0] = 255;
-            data[IDX2(col, row, width) + 1] = 0;
-            data[IDX2(col, row, width) + 2] = 0;
+            double u = (double)i / (double)(image_width - 1);
+            double v = (double)j / (double)(image_height - 1);
+
+            ray current_ray(origin, lower_left_corner + u * horizontal + v * vertical);
+
+            color current_pixel_color = ray_color(current_ray);
+
+            pixel_write(data, i, image_height - 1 - j, image_width, current_pixel_color);
         }
     }
 
-    //  int stbi_write_png(char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes);
-    bool res = write_image(NEW_FILENAME, width, height, channels, data);
+    // Write
+    bool res = image_write(NEW_FILENAME, image_width, image_height, channels, data.get());
+
     return res;
-    // int res = stbi_write_jpg(NEW_FILENAME, width, height, channels, data, 100);
 }
