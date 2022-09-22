@@ -11,14 +11,20 @@
 #include <iostream>
 #include <memory>
 
-color ray_color(const ray& r, const hittable_list& world)
+color ray_color(const ray& r, const hittable_list& world, size_t depth)
 {
+    if (depth <= 0)
+    {
+        return color(0., 0., 0.);
+    }
+
     hit_record rec;
 
-    if (world.hit(r, 0, 1000, rec))
+    if (world.hit(r, 0.0001, infinity, rec))
     {
-        vec3 N = rec.normal;
-        return 0.5 * (N + 1.0);
+        vec3 ray_dir = rec.normal + vec3::random_in_unit_sphere();
+        color col = 0.5 * ray_color(ray(rec.p, ray_dir), world, depth - 1);
+        return col;
     }
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5 * (unit_direction.y() + 1.0);
@@ -34,6 +40,7 @@ int main()
     static constexpr size_t image_height = image_width / aspect_ratio;
     static constexpr size_t channels = 3;
     static constexpr int samples_per_pixel = 100;
+    static constexpr size_t max_depth = 50;
     static constexpr char NEW_FILENAME[] = "out.png";
 
     std::unique_ptr<byte[]> data = alloc_image_buffer(image_width, image_height, channels);
@@ -60,7 +67,7 @@ int main()
                 double u = ((double)i + random_double()) / (double)(image_width - 1);
                 double v = ((double)j + random_double()) / (double)(image_height - 1);
                 ray current_ray = cam.get_ray(u, v);
-                current_pixel_color += ray_color(current_ray, world);
+                current_pixel_color += ray_color(current_ray, world, max_depth);
             }
             current_pixel_color /= samples_per_pixel;
 

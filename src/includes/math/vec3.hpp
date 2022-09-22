@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math/common.hpp"
+
 #include <cmath>
 #include <ostream>
 
@@ -27,9 +29,30 @@ public:
 
     double length_squared() const;
 
+    // will actually be inside unit cube [0,1] x [0,1] x [0,1]
+    static vec3 random();
+
+    static vec3 random_in_unit_sphere();
+
 public:
     double e[3];
 };
+
+inline vec3 vec3::random()
+{
+    return vec3(random_double(), random_double(), random_double());
+}
+
+inline vec3 vec3::random_in_unit_sphere()
+{
+    vec3 random_in_unit_square = vec3::random();
+    while (random_in_unit_square.length_squared() >= 1)
+    {
+        random_in_unit_square = vec3::random();
+    }
+
+    return random_in_unit_square;
+}
 
 inline double vec3::x() const
 {
