@@ -9,6 +9,7 @@ class vec3
 {
 public:
     vec3() : e{ 0., 0., 0. } {}
+    vec3(double e) : e{ e, e, e } {}
     vec3(double e0, double e1, double e2) : e{ e0, e1, e2 } {}
 
     double x() const;
@@ -28,6 +29,8 @@ public:
     double length() const;
 
     double length_squared() const;
+
+    bool near_zero() const;
 
     // will actually be inside unit cube [0,1] x [0,1] x [0,1]
     static vec3 random();

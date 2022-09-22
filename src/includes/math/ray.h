@@ -5,6 +5,7 @@
 class ray
 {
 public:
+    ray() {}
     ray(point3 origin, vec3 direction) : o(origin), d(direction) {}
     point3 origin() const
     {

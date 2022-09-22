@@ -1,12 +1,13 @@
 #include "objects/sphere.h"
 
-void sphere::set_hit_record(const ray& r, double t, hit_record& rec) const
+void sphere::set_hit_record(const ray& r, double t, hit_record& rec, std::shared_ptr<material> mat) const
 {
     rec.t = t;
     rec.p = r.at(t);
 
     vec3 outward_normal = (rec.p - _center) / _rad; // asumption that the point is on the sphere
     rec.set_face_normal(r, outward_normal);
+    rec.mat = mat;
 }
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const
@@ -36,7 +37,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 
         if (is_hit)
         {
-            set_hit_record(r, nearest_root, rec);
+            set_hit_record(r, nearest_root, rec, _mat);
         }
     }
 
