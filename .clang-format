@@ -22,7 +22,7 @@ BraceWrapping:
   BeforeLambdaBody : true
 BreakBeforeBraces: Custom
 AlwaysBreakTemplateDeclarations: true
-ColumnLimit: 120
+ColumnLimit: 140
 Cpp11BracedListStyle: false
 FixNamespaceComments: false
 IndentCaseLabels: false

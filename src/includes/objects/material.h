@@ -22,9 +22,10 @@ private:
 class metal : public material
 {
 public:
-    metal(const color& albedo) : _albedo(albedo) {}
+    metal(const color& albedo,double fuzziness) : _albedo(albedo),_fuzziness(fuzziness) {}
     virtual bool scatter(const ray& in, const hit_record& rec, color& attenuation, ray& scattered) const override;
 
 private:
     color _albedo;
+    double _fuzziness;
 };

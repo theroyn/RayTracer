@@ -43,7 +43,7 @@ int main()
 {
     // Image
     static constexpr double aspect_ratio = 16.0 / 9.0;
-    static constexpr size_t image_width = 400;
+    static constexpr size_t image_width = 600;
     static constexpr size_t image_height = image_width / aspect_ratio;
     static constexpr size_t channels = 3;
     static constexpr int samples_per_pixel = 100;
@@ -54,9 +54,10 @@ int main()
 
     // World
     hittable_list world;
-    world.add(std::make_shared<sphere>(point3(0., 0., -1.4), 0.5, std::make_shared<lambertian>(vec3(0.5))));
-    world.add(std::make_shared<sphere>(point3(-0.7, 0.2, -1.5), 0.2, std::make_shared<metal>(vec3(0.5))));
-    world.add(std::make_shared<sphere>(point3(1.0, 0.5, -1.2), 0.2, std::make_shared<metal>(vec3(0.5))));
+    world.add(std::make_shared<sphere>(point3(0., 0., -1.4), 0.5, std::make_shared<metal>(vec3(0.8), 0.)));
+    world.add(std::make_shared<sphere>(point3(-0.7, 0.2, -1.5), 0.2, std::make_shared<metal>(vec3(0.5), 0.9)));
+    world.add(std::make_shared<sphere>(point3(-0.3, 0., -0.4), 0.1, std::make_shared<metal>(vec3(0.6, 0.8, 0.2), 0.4)));
+    world.add(std::make_shared<sphere>(point3(1.0, 0.5, -1.2), 0.2, std::make_shared<lambertian>(vec3(0.5, 0.3, 0.9))));
     world.add(std::make_shared<sphere>(point3(0., -100.5, -1.), 100, std::make_shared<lambertian>(vec3(0.3, 0.2, 0.1))));
 
     // Camera
