@@ -22,7 +22,7 @@ color ray_color(const ray& r, const hittable_list& world, size_t depth)
 
     if (world.hit(r, 0.0001, infinity, rec))
     {
-        vec3 ray_dir = rec.normal + vec3::random_in_unit_sphere();
+        vec3 ray_dir = rec.normal + vec3::random_on_surface_of_unit_sphere();
         color col = 0.5 * ray_color(ray(rec.p, ray_dir), world, depth - 1);
         return col;
     }

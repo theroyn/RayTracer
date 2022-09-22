@@ -33,91 +33,12 @@ public:
     static vec3 random();
 
     static vec3 random_in_unit_sphere();
+    static vec3 random_on_surface_of_unit_sphere();
+    static vec3 random_in_hemisphere(const vec3& normal);
 
 public:
     double e[3];
 };
-
-inline vec3 vec3::random()
-{
-    return vec3(random_double(), random_double(), random_double());
-}
-
-inline vec3 vec3::random_in_unit_sphere()
-{
-    vec3 random_in_unit_square = vec3::random();
-    while (random_in_unit_square.length_squared() >= 1)
-    {
-        random_in_unit_square = vec3::random();
-    }
-
-    return random_in_unit_square;
-}
-
-inline double vec3::x() const
-{
-    return e[0];
-}
-
-inline double vec3::y() const
-{
-    return e[1];
-}
-
-inline double vec3::z() const
-{
-    return e[2];
-}
-
-inline vec3 vec3::operator-() const
-{
-    return vec3(-e[0], -e[1], -e[2]);
-}
-
-inline double vec3::operator[](int idx) const
-{
-    return e[idx];
-}
-
-inline double& vec3::operator[](int idx)
-{
-    return e[idx];
-}
-
-inline vec3& vec3::operator+=(const vec3& v)
-{
-    e[0] += v[0];
-    e[1] += v[1];
-    e[2] += v[2];
-
-    return *this;
-}
-
-inline vec3& vec3::operator*=(const double t)
-{
-    e[0] *= t;
-    e[1] *= t;
-    e[2] *= t;
-
-    return *this;
-}
-
-inline vec3& vec3::operator/=(const double t)
-{
-    double inv = 1. / t;
-
-    return *this *= inv;
-}
-
-inline double vec3::length() const
-{
-    return std::sqrt(length_squared());
-}
-
-inline double vec3::length_squared() const
-{
-    return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
-}
 
 // Type aliases for vec3
 using point3 = vec3; // 3D point
