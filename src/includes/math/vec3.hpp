@@ -111,3 +111,20 @@ inline vec3 unit_vector(vec3 v)
 {
     return v / v.length();
 }
+
+inline vec3 reflect(const vec3& v, const vec3& n)
+{
+    vec3 b = -dot(v, n) * n;
+    vec3 reflection = v + 2.0 * b;
+
+    return reflection;
+}
+
+inline vec3 refract(const vec3& unit_r, const vec3& n, double etai_over_etat)
+{
+    double cos_theta = fmin(-dot(unit_r, n), 1.);
+    vec3 r_out_perp = etai_over_etat * (unit_r + cos_theta * n);
+    vec3 r_out_par = -sqrt(fabs(1. - r_out_perp.length_squared())) * n;
+
+    return r_out_perp + r_out_par;
+}
