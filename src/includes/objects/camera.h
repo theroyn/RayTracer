@@ -5,7 +5,8 @@
 class camera
 {
 public:
-    camera(point3 lookfrom, point3 lookat, vec3 vup, double vfov, double aspect_ratio) : _origin(0., 0., 0.)
+    camera(point3 lookfrom, point3 lookat, vec3 vup, double vfov, double aspect_ratio, double aperture, double focus_dist)
+        : _origin(0., 0., 0.)
     {
         double theta = degrees_to_rad(vfov);
         double h = tan(theta * .5);
@@ -18,15 +19,17 @@ public:
         vec3 u = unit_vector(cross(vup, w));
         vec3 v = cross(w, u);
 
-        _horizontal = viewport_width * u;
-        _vertical = viewport_height * v;
+        _horizontal = focus_dist * viewport_width * u;
+        _vertical = focus_dist * viewport_height * v;
 
-        _lower_left_corner = _origin - _horizontal * .5 - _vertical * .5 - w;
+        _lower_left_corner = _origin - _horizontal * .5 - _vertical * .5 - w * focus_dist;
+        _lens_rad = aperture * .5;
     }
 
-    ray get_ray(double u, double v) const
+    ray get_ray(double s, double t) const
     {
-        return ray(_origin, _lower_left_corner + u * _horizontal + v * _vertical - _origin);
+        vec3 offset = vec3::random_in_unit_disk() * _lens_rad;
+        return ray(_origin + offset, _lower_left_corner + s * _horizontal + t * _vertical - _origin - offset);
     }
 
 private:
@@ -34,4 +37,5 @@ private:
     point3 _lower_left_corner;
     vec3 _horizontal;
     vec3 _vertical;
+    double _lens_rad;
 };

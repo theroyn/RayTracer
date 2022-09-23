@@ -23,4 +23,17 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/src/includes"
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+set(EXTERNAL_LIBS
+    Threads::Threads
+)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    list(APPEND EXTERNAL_LIBS
+        tbb
+    )
+endif()
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE 
+    "${EXTERNAL_LIBS}"
+)

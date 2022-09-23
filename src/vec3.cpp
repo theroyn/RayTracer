@@ -72,9 +72,9 @@ bool vec3::near_zero() const
     return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
 }
 
-vec3 vec3::random()
+vec3 vec3::random(double min, double max)
 {
-    return vec3(random_double(), random_double(), random_double());
+    return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
 }
 
 vec3 vec3::random_in_unit_sphere()
@@ -105,4 +105,15 @@ vec3 vec3::random_in_hemisphere(const vec3& normal)
     {
         return -v;
     }
+}
+
+vec3 vec3::random_in_unit_disk()
+{
+    vec3 random_in_unit_square = vec3(random_double(-1., 1.), random_double(-1., 1.), 0.);
+    while (random_in_unit_square.length_squared() >= 1)
+    {
+        random_in_unit_square = vec3(random_double(), random_double(), 0.);
+    }
+
+    return random_in_unit_square;
 }

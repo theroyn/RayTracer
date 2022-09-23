@@ -12,9 +12,9 @@ inline double degrees_to_rad(double deg)
     return deg * pi / 180.;
 }
 
-inline double random_double()
+inline double random_double(double min = 0., double max = 1.)
 {
-    static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    static std::uniform_real_distribution<double> distribution(min, max);
     static std::mt19937 generator;
     return distribution(generator);
 }

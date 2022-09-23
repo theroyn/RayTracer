@@ -33,11 +33,12 @@ public:
     bool near_zero() const;
 
     // will actually be inside unit cube [0,1] x [0,1] x [0,1]
-    static vec3 random();
+    static vec3 random(double min = 0., double max = 1.);
 
     static vec3 random_in_unit_sphere();
     static vec3 random_on_surface_of_unit_sphere();
     static vec3 random_in_hemisphere(const vec3& normal);
+    static vec3 random_in_unit_disk();
 
 public:
     double e[3];
