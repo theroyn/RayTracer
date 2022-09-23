@@ -30,7 +30,7 @@ bool dielectric::scatter(const ray& in, const hit_record& rec, color& attenuatio
     vec3 unit_in_dir = unit_vector(in.direction());
 
     double cos_theta = fmin(-dot(unit_in_dir, rec.normal), 1.);
-    double sine_theta = sqrt(1 - cos_theta * cos_theta);
+    double sine_theta = sqrt(1. - cos_theta * cos_theta);
 
     bool cannot_refract = (refraction_ratio * sine_theta > 1.);
     if (cannot_refract)
