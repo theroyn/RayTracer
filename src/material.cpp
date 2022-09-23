@@ -33,7 +33,7 @@ bool dielectric::scatter(const ray& in, const hit_record& rec, color& attenuatio
     double sine_theta = sqrt(1. - cos_theta * cos_theta);
 
     bool cannot_refract = (refraction_ratio * sine_theta > 1.);
-    if (cannot_refract)
+    if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_double())
     {
         vec3 reflection = reflect(in.direction(), rec.normal);
         scattered = ray(rec.p, reflection);
@@ -46,4 +46,12 @@ bool dielectric::scatter(const ray& in, const hit_record& rec, color& attenuatio
 
     attenuation = color(1.);
     return true;
+}
+
+double dielectric::reflectance(double cos_theta, double refraction_ratio)
+{
+    // Use Schlick's approximation for reflectance.
+    double r0 = (1. - refraction_ratio) / (1. + refraction_ratio);
+    r0 = r0 * r0;
+    return r0 + (1. - r0) * pow((1. - cos_theta), 5);
 }

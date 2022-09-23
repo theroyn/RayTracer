@@ -37,5 +37,8 @@ public:
     virtual bool scatter(const ray& in, const hit_record& rec, color& attenuation, ray& scattered) const override;
 
 private:
+    static double reflectance(double cos_theta, double refraction_ratio);
+
+private:
     double _ir;
 };
