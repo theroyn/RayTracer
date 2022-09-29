@@ -2,7 +2,7 @@
 #include "imgproc/pixel_manip.h"
 #include "math/common.hpp"
 #include "math/ray.h"
-#include "math/vec3.hpp"
+#include "math/vec3.h"
 #include "objects/camera.h"
 #include "objects/hittable_list.h"
 #include "objects/material.h"
