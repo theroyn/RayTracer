@@ -61,14 +61,18 @@ hittable_list dielectric_scene()
 {
     hittable_list world;
 
-    std::shared_ptr<material> ground_material = std::make_shared<lambertian>(color(165, 42, 42) / 255.);
-    // world.add(std::make_shared<sphere>(point3(0., -1., -1.), 1, ground_material));
+    std::shared_ptr<material> ground_material = std::make_shared<lambertian>(color(0.4, 0.2, 0.1));
+    world.add(std::make_shared<sphere>(point3(0., -1000., 0.), 1000., ground_material));
+
     std::shared_ptr<material> material1 = std::make_shared<dielectric>(1.5);
-    // world.add(std::make_shared<sphere>(point3(0, 0.2, -1), 0.2, material1));
-    world.add(std::make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, ground_material));
-    world.add(std::make_shared<sphere>(point3(0.0, 1.0, -1.0), 1., material1));
-    std::shared_ptr<material> material2 = std::make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
-    world.add(std::make_shared<sphere>(point3(-2.0, 1.0, -1.0), 1., material2));
+    world.add(std::make_shared<sphere>(point3(0, 1, 0), 1.0, material1));
+    world.add(std::make_shared<sphere>(point3(3, 1, 2), 0.5, material1));
+
+    std::shared_ptr<material> material2 = std::make_shared<lambertian>(color(0.5, 0.5, 0.5));
+    world.add(std::make_shared<sphere>(point3(-4, 1, 0), 1.0, material2));
+
+    std::shared_ptr<material> material3 = std::make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
+    world.add(std::make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
     return world;
 }

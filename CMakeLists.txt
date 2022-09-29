@@ -28,6 +28,7 @@ set(EXTERNAL_LIBS
 )
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # tbb is a dependency for parallel execution policies in gcc(std::execution::par_unseq)
     list(APPEND EXTERNAL_LIBS
         tbb
     )

@@ -70,22 +70,16 @@ int main()
     size_t cnt = 0;
     std::vector is(image_width, 0);
     std::vector js(image_height, 0);
-    for (int idx = 0; idx < is.size(); ++idx)
-    {
-        is[idx] = idx;
-    }
-    for (int idx = 0; idx < js.size(); ++idx)
-    {
-        js[idx] = idx;
-    }
+    std::iota(is.begin(), is.end(), 0);
+    std::iota(js.begin(), js.end(), 0);
 
     std::cout << image_width << " " << image_height << "\n";
 
-    std::for_each(std::execution::par_unseq, js.rbegin(), js.rend(),
-                  [&](int& j)
+    std::for_each(std::execution::par_unseq, js.begin(), js.end(),
+                  [&](const int& j)
                   {
                       std::for_each(std::execution::par_unseq, is.begin(), is.end(),
-                                    [&](int& i)
+                                    [&](const int& i)
                                     {
                                         color current_pixel_color;
                                         for (size_t s = 0; s < samples_per_pixel; ++s)
