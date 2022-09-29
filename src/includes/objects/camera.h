@@ -15,14 +15,14 @@ public:
 
         _origin = lookfrom;
 
-        vec3 w = unit_vector(lookfrom - lookat);
-        vec3 u = unit_vector(cross(vup, w));
-        vec3 v = cross(w, u);
+        vec3 forward = unit_vector(lookfrom - lookat);
+        vec3 right = unit_vector(cross(vup, forward));
+        vec3 up = cross(forward, right);
 
-        _horizontal = focus_dist * viewport_width * u;
-        _vertical = focus_dist * viewport_height * v;
+        _horizontal = focus_dist * viewport_width * right;
+        _vertical = focus_dist * viewport_height * up;
 
-        _lower_left_corner = _origin - _horizontal * .5 - _vertical * .5 - w * focus_dist;
+        _lower_left_corner = _origin - _horizontal * .5 - _vertical * .5 - forward * focus_dist;
         _lens_rad = aperture * .5;
     }
 

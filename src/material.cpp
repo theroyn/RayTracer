@@ -35,7 +35,7 @@ bool dielectric::scatter(const ray& in, const hit_record& rec, color& attenuatio
     bool cannot_refract = (refraction_ratio * sine_theta > 1.);
     if (cannot_refract || reflectance(cos_theta, refraction_ratio) > random_double())
     {
-        vec3 reflection = reflect(in.direction(), rec.normal);
+        vec3 reflection = reflect(unit_in_dir, rec.normal);
         scattered = ray(rec.p, reflection);
     }
     else

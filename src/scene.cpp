@@ -31,7 +31,7 @@ hittable_list random_scene()
                 {
                     // metal
                     color albedo = color::random(0.5, 1.);
-                    color fuzz = random_double(0., 0.5);
+                    double fuzz = random_double(0., 0.5);
                     sphere_material = std::make_shared<metal>(albedo, fuzz);
                     world.add(std::make_shared<sphere>(center, 0.2, sphere_material));
                 }
@@ -53,6 +53,22 @@ hittable_list random_scene()
 
     std::shared_ptr<material> material3 = std::make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     world.add(std::make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
+
+    return world;
+}
+
+hittable_list dielectric_scene()
+{
+    hittable_list world;
+
+    std::shared_ptr<material> ground_material = std::make_shared<lambertian>(color(165, 42, 42) / 255.);
+    // world.add(std::make_shared<sphere>(point3(0., -1., -1.), 1, ground_material));
+    std::shared_ptr<material> material1 = std::make_shared<dielectric>(1.5);
+    // world.add(std::make_shared<sphere>(point3(0, 0.2, -1), 0.2, material1));
+    world.add(std::make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, ground_material));
+    world.add(std::make_shared<sphere>(point3(0.0, 1.0, -1.0), 1., material1));
+    std::shared_ptr<material> material2 = std::make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
+    world.add(std::make_shared<sphere>(point3(-2.0, 1.0, -1.0), 1., material2));
 
     return world;
 }

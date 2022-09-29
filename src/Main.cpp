@@ -45,11 +45,11 @@ color ray_color(const ray& r, const hittable_list& world, size_t depth)
 int main()
 {
     // Image
-    static constexpr double aspect_ratio = 16.0 / 9.0;
-    static constexpr size_t image_width = 600;
+    static constexpr double aspect_ratio = 3.0 / 2.0;
+    static constexpr size_t image_width = 1200;
     static constexpr size_t image_height = image_width / aspect_ratio;
     static constexpr size_t channels = 3;
-    static constexpr int samples_per_pixel = 100;
+    static constexpr int samples_per_pixel = 500;
     static constexpr size_t max_depth = 50;
     static constexpr char NEW_FILENAME[] = "out.png";
 
@@ -90,15 +90,16 @@ int main()
                                         color current_pixel_color;
                                         for (size_t s = 0; s < samples_per_pixel; ++s)
                                         {
-                                            double u = ((double)i + random_double()) / (double)(image_width - 1);
-                                            double v = ((double)j + random_double()) / (double)(image_height - 1);
+                                            double u = ((double)i + random_double(0., 1.)) / (double)(image_width - 1);
+                                            double v = ((double)j + random_double(0., 1.)) / (double)(image_height - 1);
                                             ray current_ray = cam.get_ray(u, v);
                                             color sample_color = ray_color(current_ray, world, max_depth);
                                             // leaving here for debugging darkness
                                             // if (sample_color.length_squared() < 0.4 && j >= image_height / 2.)
                                             // {
                                             //     color nnnnn = ray_color(current_ray, world, max_depth);
-                                            //     // std::cout << i << "," << image_height - 1 - j << ": " << sample_color << "\n";
+                                            // std::cout << i << "-->" << u * (double)(image_width - 1) << "," << j << "-->"
+                                            //           << v * (double)(image_height - 1) << ": " << sample_color << "\n";
                                             //     sample_color = vec3(1., 0., 0.);
                                             // }
                                             current_pixel_color += sample_color;
